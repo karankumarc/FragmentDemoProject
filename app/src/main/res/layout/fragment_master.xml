@@ -3,7 +3,7 @@
     android:id="@+id/fragment_master"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.techpalle.karan.fragmentdemoproject.MasterFragment">
+    tools:context=".ui.MasterFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <ListView
