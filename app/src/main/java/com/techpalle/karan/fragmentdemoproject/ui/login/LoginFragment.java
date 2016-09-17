@@ -1,13 +1,17 @@
 package com.techpalle.karan.fragmentdemoproject.ui.login;
 
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,18 +23,37 @@ import com.techpalle.karan.fragmentdemoproject.ui.MainActivity;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LoginFragment extends Fragment implements View.OnClickListener {
+public class LoginFragment extends Fragment {
 
+    MyDatabase database;
+
+    private RegisterClickedListener listener;
 
     private EditText editTextUsername, editTextPassword;
     private Button buttonLogin;
     private TextView textViewRegister;
+    private CheckBox checkBox;
+
+    public interface RegisterClickedListener{
+        public void onRegisterClicked();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            listener = (RegisterClickedListener) context;
+        }catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement registerClickedListener");
+        }
+
+    }
 
     public LoginFragment() {
         // Required empty public constructor
     }
-
-    MyDatabase database;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
@@ -44,35 +67,86 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         editTextPassword = (EditText) view.findViewById(R.id.edit_text_password);
         buttonLogin = (Button) view.findViewById(R.id.button_login);
         textViewRegister = (TextView) view.findViewById(R.id.text_view_register);
+        checkBox = (CheckBox) view.findViewById(R.id.checkbox_remember_password);
 
-        textViewRegister.setOnClickListener(this);
-
-        buttonLogin.setOnClickListener(new View.OnClickListener() {
+        checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = editTextUsername.getText().toString().trim();
-                String password = editTextPassword.getText().toString().trim();
 
-                if(database.validateUser(username, password)){
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                    startActivity(intent);
-                    getActivity().finish();
+                if(checkBox.isChecked()){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Remember password?");
+                    builder.setIcon(R.mipmap.ic_launcher);
+                    builder.setMessage("Are you sure?");
+                    builder.setCancelable(false); // Set if the dialog can be closed by clicking outside the bounds
+
+                    builder.setPositiveButton("Absolutely", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // Handle positive click
+                            Toast.makeText(getActivity(), "Yes clicked", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                    builder.setNegativeButton("Nope", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                            if(checkBox.isChecked()){
+                                checkBox.setChecked(false);
+                            }
+                        }
+                    });
+                    //endregion
+
+                    //region Show the dialog
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                } else {
+                    checkBox.setChecked(false);
                 }
 
             }
         });
 
+
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = editTextUsername.getText().toString().trim().toLowerCase();
+                String password = editTextPassword.getText().toString().trim();
+
+                if(username.length() < 5 || password.length() < 5){
+                    Toast.makeText(getActivity(), "Username and password must be greater an 5 characters", Toast.LENGTH_SHORT).show();
+                } else if(!database.checkIfUsernameAndPasswordExist(username, password)){
+                    Toast.makeText(getActivity(), "Invalid credentials", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent in = new Intent(getActivity(), MainActivity.class);
+                    startActivity(in);
+                    getActivity().finish();
+                    Toast.makeText(getActivity(), "Logged in successfully", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        textViewRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*LoginActivity loginActivity = (LoginActivity) getActivity();
+                loginActivity.registerClicked();*/
+                listener.onRegisterClicked();
+            }
+        });
         return view;
     }
 
     @Override
-    public void onClick(View v) {
-        LoginActivity activity = (LoginActivity) getActivity();
-        activity.registerButtonClicked();
-    }
+    public void onResume() {
+        super.onResume();
+        LoginActivity loginActivity = (LoginActivity) getActivity();
+        String[] usernameAndPassword = loginActivity.getUsernameAndPassword();
 
-    public void setUsernameAndPassword(String username, String password) {
-        editTextUsername.setText(username);
-        editTextPassword.setText(password);
+        editTextUsername.setText(usernameAndPassword[0]);
+        editTextPassword.setText(usernameAndPassword[1]);
     }
 }

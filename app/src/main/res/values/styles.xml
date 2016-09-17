@@ -3,14 +3,30 @@
     <!-- Base application theme. -->
     <style name="Base.AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item> <!-- toolbar -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item> <!-- notification/status bar -->
+        <item name="colorAccent">@color/colorAccent</item> <!-- Widgets when activated -->
+      <!--  <item name="textColorPrimary"></item> &lt;!&ndash; Title text &ndash;&gt;
+        <item name="windowBackground"></item> &lt;!&ndash; Background of app screen &ndash;&gt;
+        <item name="textColorSecondary"></item> &lt;!&ndash; Navigation arrow/overflow icon &ndash;&gt;
+        <item name="colorControlHighlight"></item> &lt;!&ndash; Color of ripple animation &ndash;&gt;
+        <item name="colorButtonNormal"></item> &lt;!&ndash; Button background color &ndash;&gt;
+        <item name="colorControlActivated"></item> &lt;!&ndash; Widget when selected/activated&ndash;&gt;
+        <item name="navigationBarColor"></item> &lt;!&ndash; color of navigation bar &ndash;&gt;-->
     </style>
 
     <style name="AppTheme" parent="Base.AppTheme">
 
     </style>
 
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:textColorPrimary">@color/colorAccent</item> <!-- toolbar title -->
+        <item name="android:textColorSecondary">@color/colorAccent</item> <!-- Overflow menu icon and navigation drawer -->
+    </style>
+
+    <style name="MenuTheme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:textColorPrimary">@color/colorAccent</item> <!-- Text of overflow menu -->
+        <item name="android:background">@color/colorPrimary</item> <!-- Background of overflow menu -->
+    </style>
 
 </resources>

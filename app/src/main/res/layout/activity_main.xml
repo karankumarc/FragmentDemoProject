@@ -5,11 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
-    <include layout="@layout/toolbar"
-        android:layout_alignParentTop="true"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:id="@+id/toolbar" />
+    <include layout="@layout/toolbar" android:id="@+id/toolbar" />
 
     <fragment
         android:layout_below="@id/toolbar"
@@ -17,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="com.techpalle.karan.fragmentdemoproject.ui.MasterFragment"
-        android:id="@+id/fragment_master_main"/>
+        android:id="@+id/fragment_master_main"
+        tools:layout="@layout/fragment_master" />
 
 </RelativeLayout>

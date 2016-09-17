@@ -1,5 +1,8 @@
 package com.techpalle.karan.fragmentdemoproject.ui.login;
 
+import android.app.Fragment;
+import android.os.Build;
+import android.os.StrictMode;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -7,48 +10,65 @@ import android.os.Bundle;
 
 import com.techpalle.karan.fragmentdemoproject.R;
 
-public class LoginActivity extends AppCompatActivity{
+public class LoginActivity extends AppCompatActivity implements LoginFragment.RegisterClickedListener, RegisterFragment.LoginClickedListener{
+
+    private String username, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            // Call some material design API's here
+        } else {
+            // Implement this feature without material design
+        }
+
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         LoginFragment loginFragment = new LoginFragment();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.login_container, loginFragment).commit();
+        fragmentTransaction.add(R.id.login_container, loginFragment, "LoginFragmentTag");
+        fragmentTransaction.commit();
+
     }
 
-    public void registerButtonClicked(){
-        FragmentManager fragmentManager = getSupportFragmentManager();
+
+    public void registerClicked(){
         RegisterFragment registerFragment = new RegisterFragment();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.login_container, registerFragment);
-        fragmentTransaction.addToBackStack(null).commit();
-
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.login_container, registerFragment, "RegisterFragment");
+        transaction.addToBackStack("");
+        transaction.commit();
     }
 
-    public void loginButtonClicked(){
+    @Override
+    public void onRegisterClicked() {
+        RegisterFragment registerFragment = new RegisterFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
-        RegisterFragment registerFragment = (RegisterFragment) fragmentManager.findFragmentById(R.id.login_container);
-        if (registerFragment != null) {
-            registerFragment.onBackPressed();
-        } else {
-            super.onBackPressed();
-        }
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.login_container, registerFragment, "RegisterFragment");
+        transaction.addToBackStack("");
+        transaction.commit();
     }
 
-    public void passUserDetailsToLoginFragment(String username, String password){
+    @Override
+    public void onLoginClicked() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.popBackStack(fragmentManager.getBackStackEntryAt
-                        (fragmentManager.getBackStackEntryCount()-1).getId(),
-                FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        /*LoginFragment loginFragment = (LoginFragment) fragmentManager.findFragmentById(R.id.login_container);
-        loginFragment.setUsernameAndPassword(username, password);*/
-        /*LoginFragment loginFragment = (LoginFragment) fragmentManager.findFragmentById(fragmentManager.getBackStackEntryAt
-                (fragmentManager.getBackStackEntryCount()-1).getId());
-        loginFragment.setUsernameAndPassword(username, password);*/
+        fragmentManager.popBackStack(); // Equal to pressing back button
+    }
+
+    @Override
+    public void onRegisteredSuccessfully(String username, String password) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.popBackStack(); // Equal to pressing back button
+        this.username = username;
+        this.password = password;
+    }
+
+    public String[] getUsernameAndPassword(){
+        return new String[]{username, password};
     }
 }
