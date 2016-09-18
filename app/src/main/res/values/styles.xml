@@ -16,10 +16,10 @@
     </style>
 
     <style name="AppTheme" parent="Base.AppTheme">
-
     </style>
 
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:background">@color/colorPrimary</item>
         <item name="android:textColorPrimary">@color/colorAccent</item> <!-- toolbar title -->
         <item name="android:textColorSecondary">@color/colorAccent</item> <!-- Overflow menu icon and navigation drawer -->
     </style>
@@ -27,6 +27,10 @@
     <style name="MenuTheme" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:textColorPrimary">@color/colorAccent</item> <!-- Text of overflow menu -->
         <item name="android:background">@color/colorPrimary</item> <!-- Background of overflow menu -->
+    </style>
+
+    <style name="tabStyle">
+        <item name="android:textSize">12sp</item>
     </style>
 
 </resources>

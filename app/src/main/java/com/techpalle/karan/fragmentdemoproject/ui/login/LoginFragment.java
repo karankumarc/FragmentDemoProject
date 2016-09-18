@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -18,7 +19,7 @@ import android.widget.Toast;
 
 import com.techpalle.karan.fragmentdemoproject.R;
 import com.techpalle.karan.fragmentdemoproject.data.MyDatabase;
-import com.techpalle.karan.fragmentdemoproject.ui.MainActivity;
+import com.techpalle.karan.fragmentdemoproject.ui.landing.MainActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,8 +34,9 @@ public class LoginFragment extends Fragment {
     private Button buttonLogin;
     private TextView textViewRegister;
     private CheckBox checkBox;
+    private TextInputLayout textInputLayoutUsername, textInputLayoutPassword;
 
-    public interface RegisterClickedListener{
+    public interface RegisterClickedListener {
         public void onRegisterClicked();
     }
 
@@ -44,7 +46,7 @@ public class LoginFragment extends Fragment {
 
         try {
             listener = (RegisterClickedListener) context;
-        }catch (ClassCastException e) {
+        } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + " must implement registerClickedListener");
         }
@@ -62,18 +64,21 @@ public class LoginFragment extends Fragment {
 
         database = new MyDatabase(getActivity());
 
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        final View view = inflater.inflate(R.layout.fragment_login, container, false);
         editTextUsername = (EditText) view.findViewById(R.id.edit_text_username);
         editTextPassword = (EditText) view.findViewById(R.id.edit_text_password);
         buttonLogin = (Button) view.findViewById(R.id.button_login);
         textViewRegister = (TextView) view.findViewById(R.id.text_view_register);
         checkBox = (CheckBox) view.findViewById(R.id.checkbox_remember_password);
 
+        textInputLayoutUsername = (TextInputLayout) view.findViewById(R.id.input_layout_username);
+        textInputLayoutPassword = (TextInputLayout) view.findViewById(R.id.input_layout_password);
+
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(checkBox.isChecked()){
+                if (checkBox.isChecked()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle("Remember password?");
                     builder.setIcon(R.mipmap.ic_launcher);
@@ -92,7 +97,7 @@ public class LoginFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
 
-                            if(checkBox.isChecked()){
+                            if (checkBox.isChecked()) {
                                 checkBox.setChecked(false);
                             }
                         }
@@ -116,10 +121,12 @@ public class LoginFragment extends Fragment {
                 String username = editTextUsername.getText().toString().trim().toLowerCase();
                 String password = editTextPassword.getText().toString().trim();
 
-                if(username.length() < 5 || password.length() < 5){
-                    Toast.makeText(getActivity(), "Username and password must be greater an 5 characters", Toast.LENGTH_SHORT).show();
-                } else if(!database.checkIfUsernameAndPasswordExist(username, password)){
-                    Toast.makeText(getActivity(), "Invalid credentials", Toast.LENGTH_SHORT).show();
+                if (!validateUsername() || !validatePassword()) {
+                    //Toast.makeText(getActivity(), "Username and password must be greater an 5 characters", Toast.LENGTH_SHORT).show();
+                } else if (!database.checkIfUsernameAndPasswordExist(username, password)) {
+                    //Toast.makeText(getActivity(), "Invalid credentials", Toast.LENGTH_SHORT).show();
+                    textInputLayoutUsername.setError("Invalid credentials");
+                    textInputLayoutPassword.setError("Invalid credentials");
                 } else {
                     Intent in = new Intent(getActivity(), MainActivity.class);
                     startActivity(in);
@@ -138,6 +145,32 @@ public class LoginFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    private boolean validateUsername() {
+
+        String username = editTextUsername.getText().toString().trim().toLowerCase();
+
+        if (username.length() <= 5) {
+            textInputLayoutUsername.setError("Username must be greater than 5 characters");
+            return false;
+        } else {
+            textInputLayoutUsername.setErrorEnabled(false);
+            return true;
+        }
+    }
+
+
+    private boolean validatePassword() {
+        String password = editTextPassword.getText().toString().trim().toLowerCase();
+
+        if (password.length() <= 8) {
+            textInputLayoutPassword.setError("Password must be greater than 8 characters");
+            return false;
+        } else {
+            textInputLayoutPassword.setErrorEnabled(false);
+            return true;
+        }
     }
 
     @Override
