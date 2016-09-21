@@ -1,4 +1,4 @@
-package com.techpalle.karan.fragmentdemoproject;
+package com.techpalle.karan.fragmentdemoproject.ui;
 
 
 import android.content.Intent;
@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.techpalle.karan.fragmentdemoproject.R;
+import com.techpalle.karan.fragmentdemoproject.ui.DetailActivity;
 
 
 /**
